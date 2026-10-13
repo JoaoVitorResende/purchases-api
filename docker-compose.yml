@@ -1,0 +1,25 @@
+# docker-compose.yml
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: purchases
+      POSTGRES_PASSWORD: purchases
+      POSTGRES_DB: purchases
+    ports:
+      - "5433:5432"   # 5433 para não colidir com o seu Postgres local na 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d   # roda os .sql só na primeira criação
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: purchases
+      RABBITMQ_DEFAULT_PASS: purchases
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # painel em http://localhost:15672
+
+volumes:
+  pgdata:
